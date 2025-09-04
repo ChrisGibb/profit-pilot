@@ -1,0 +1,44 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    // Helper function to check for ownership
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Demo project is public readable
+    match /projects/demo {
+      allow get: if true;
+      allow list, write: if false; // No one can list or write to demo
+    }
+
+    // Users can only access their own projects
+    match /projects/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Scenarios are tied to projects, access controlled by project ownership
+    // This assumes a structure like /projects/{userId}/scenarios/{scenarioId}
+    // A flatter structure would need different rules.
+    match /projects/{userId}/{document=**} {
+       allow read, write: if isOwner(userId);
+    }
+
+    // Saved runs can be read by their owner, but are immutable once created.
+    match /runs/{runId} {
+      allow get: if isOwner(resource.data.userId);
+      allow list: if request.auth.uid == request.query.userId;
+      allow create: if isOwner(request.resource.data.userId);
+      allow update, delete: if false; // Runs are immutable
+    }
+
+    // Allow users to report bugs, but not read others' reports
+    match /bugReports/{reportId} {
+        allow create: if true;
+        allow read, write: if false;
+    }
+  }
+}
