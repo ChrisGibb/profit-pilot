@@ -1,5 +1,1 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+Please configure git remote origin to https://github.com/PawelMindlink/studio.git and push the latest branch with all changes to GitHub
