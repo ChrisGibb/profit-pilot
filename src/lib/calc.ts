@@ -90,7 +90,7 @@ interface Mechanics {
  * Mechanics are the independent variables that scenarios can change.
  */
 const getBaseMechanics = (baseInput: BaseInput): Mechanics => {
-    const manualChannels: ChannelData[] = JSON.parse(JSON.stringify(baseInput.channels));
+    const manualChannels: ChannelData[] = structuredClone(baseInput.channels);
     const baseBusiness = baseInput.business;
 
     let envelopeSource: TotalsEnvelope['source'] = 'ga4';
@@ -283,7 +283,7 @@ const applyScenario = (
     scenario: Scenario,
     band: ActiveBand
 ): Mechanics => {
-    let newMechanics: Mechanics = JSON.parse(JSON.stringify(mechanics));
+    let newMechanics: Mechanics = structuredClone(mechanics);
 
     const applyChange = (
         currentValue: number,

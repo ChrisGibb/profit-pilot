@@ -25,6 +25,7 @@ export interface BaseInputs {
   grossMarginPct: number;
   fixedOpexLTM: number;
   marketingBudgetLTM?: number; // Optional, used in specific scenarios
+  conversionRate?: number; // Optional, can be derived
 }
 
 export interface CalculatedMetrics {
@@ -83,9 +84,10 @@ export function calculate(inputs: BaseInputs, settings: EngineSettings): { resul
   // NOTE: This is a simplification. A real model might ask for transactions.
   // We derive CR from an assumed AOV, which is a weak point but necessary for this simple wizard.
   // A better wizard might ask for AOV or Transactions directly.
-  // Let's assume a default CR to make the model work.
-  const conversionRate = 0.02; // Assumed default
-  notes.push(`Assumed a default Conversion Rate of ${(conversionRate * 100).toFixed(1)}% as it was not provided.`);
+  const conversionRate = inputs.conversionRate ?? 0.02; // Use input CR or default
+  if (!inputs.conversionRate) {
+    notes.push(`Assumed a default Conversion Rate of ${(conversionRate * 100).toFixed(1)}% as it was not provided.`);
+  }
   const transactionsLTM = sessionsLTM * conversionRate;
   const aovGross = transactionsLTM > 0 ? revenueGrossLTM / transactionsLTM : 0;
   

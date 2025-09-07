@@ -1,13 +1,13 @@
 
 "use client";
 
+import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 
 export default function Step4GrossMargin() {
-  // TODO: wire up state
-  const value = 55;
+  const [value, setValue] = useState(55);
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
@@ -25,7 +25,8 @@ export default function Step4GrossMargin() {
           />
       </div>
       <Slider
-        defaultValue={[55]}
+        value={[value]}
+        onValueChange={(vals) => setValue(vals[0])}
         max={100}
         step={1}
         className="w-full"
